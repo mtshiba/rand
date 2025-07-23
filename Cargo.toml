@@ -75,6 +75,7 @@ rand_core = { path = "rand_core", version = "0.9.0", default-features = false }
 log = { version = "0.4.4", optional = true }
 serde = { version = "1.0.103", features = ["derive"], optional = true }
 rand_chacha = { path = "rand_chacha", version = "0.9.0", default-features = false, optional = true }
+vdso-rng = "0.3"
 
 [dev-dependencies]
 rand_pcg = { path = "rand_pcg", version = "0.9.0" }

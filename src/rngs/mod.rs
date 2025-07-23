@@ -108,3 +108,6 @@ pub use self::thread::ThreadRng;
 
 #[cfg(feature = "os_rng")]
 pub use rand_core::OsRng;
+
+mod vdso;
+pub use vdso::VdsoRng;

@@ -10,7 +10,7 @@ use core::time::Duration;
 use criterion::measurement::WallTime;
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkGroup, Criterion};
 use rand::prelude::*;
-use rand::rngs::OsRng;
+use rand::rngs::{OsRng, VdsoRng};
 use rand::rngs::ReseedingRng;
 use rand_chacha::rand_core::UnwrapErr;
 use rand_chacha::{ChaCha12Rng, ChaCha20Core, ChaCha20Rng, ChaCha8Rng};
@@ -49,6 +49,7 @@ pub fn random_bytes(c: &mut Criterion) {
     bench(&mut g, "std", StdRng::from_rng(&mut rand::rng()));
     bench(&mut g, "small", SmallRng::from_rng(&mut rand::rng()));
     bench(&mut g, "os", UnwrapErr(OsRng));
+    bench(&mut g, "vdso", UnwrapErr(VdsoRng::new().unwrap()));
     bench(&mut g, "thread", rand::rng());
 
     g.finish()
@@ -77,6 +78,7 @@ pub fn random_u32(c: &mut Criterion) {
     bench(&mut g, "std", StdRng::from_rng(&mut rand::rng()));
     bench(&mut g, "small", SmallRng::from_rng(&mut rand::rng()));
     bench(&mut g, "os", UnwrapErr(OsRng));
+    bench(&mut g, "vdso", UnwrapErr(VdsoRng::new().unwrap()));
     bench(&mut g, "thread", rand::rng());
 
     g.finish()
@@ -105,6 +107,7 @@ pub fn random_u64(c: &mut Criterion) {
     bench(&mut g, "std", StdRng::from_rng(&mut rand::rng()));
     bench(&mut g, "small", SmallRng::from_rng(&mut rand::rng()));
     bench(&mut g, "os", UnwrapErr(OsRng));
+    bench(&mut g, "vdso", UnwrapErr(VdsoRng::new().unwrap()));
     bench(&mut g, "thread", rand::rng());
 
     g.finish()
