@@ -8,12 +8,21 @@ A [separate changelog is kept for rand_core](rand_core/CHANGELOG.md).
 
 You may also find the [Upgrade Guide](https://rust-random.github.io/book/update.html) useful.
 
-## [Unreleased]
+## [0.10.0 — Unreleased]
 ### Changes
 - Rename fns `IndexedRandom::choose_multiple` -> `sample`, `choose_multiple_array` -> `sample_array`, `choose_multiple_weighted` -> `sample_weighted`, struct `SliceChooseIter` -> `IndexedSamples` and fns `IteratorRandom::choose_multiple` -> `sample`, `choose_multiple_fill` -> `sample_fill` (#1632)
+- Let `Fill` be implemented for element types, not sliceable types (#1652)
 
 ### Additions
 - Add fns `IndexedRandom::choose_iter`, `choose_weighted_iter` (#1632)
+- Pub export `Xoshiro128PlusPlus`, `Xoshiro256PlusPlus` prngs (#1649)
+
+## [0.9.2 — 2025-07-20]
+### Deprecated
+- Deprecate `rand::rngs::mock` module and `StepRng` generator (#1634)
+
+### Additions
+- Enable `WeightedIndex<usize>` (de)serialization (#1646)
 
 ## [0.9.1] - 2025-04-17
 ### Security and unsafe

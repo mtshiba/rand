@@ -110,7 +110,11 @@ pub trait IndexedRandom: Index<usize> {
     /// }
     /// ```
     #[cfg(feature = "alloc")]
-    fn sample<R>(&self, rng: &mut R, amount: usize) -> IndexedSamples<Self, Self::Output>
+    fn sample<R>(
+        &self,
+        rng: &mut R,
+        amount: usize,
+    ) -> IndexedSamples<'_, Self, Self::Output>
     where
         Self::Output: Sized,
         R: Rng + ?Sized,
@@ -256,7 +260,7 @@ pub trait IndexedRandom: Index<usize> {
         rng: &mut R,
         amount: usize,
         weight: F,
-    ) -> Result<IndexedSamples<Self, Self::Output>, WeightError>
+    ) -> Result<IndexedSamples<'_, Self, Self::Output>, WeightError>
     where
         Self::Output: Sized,
         R: Rng + ?Sized,
@@ -280,7 +284,7 @@ pub trait IndexedRandom: Index<usize> {
     /// Deprecated: use [`Self::sample`] instead
     #[cfg(feature = "alloc")]
     #[deprecated(since = "0.9.2", note = "Renamed to `sample`")]
-    fn choose_multiple<R>(&self, rng: &mut R, amount: usize) -> IndexedSamples<Self, Self::Output>
+    fn choose_multiple<R>(&self, rng: &mut R, amount: usize) -> IndexedSamples<'_, Self, Self::Output>
     where
         Self::Output: Sized,
         R: Rng + ?Sized,
@@ -306,7 +310,7 @@ pub trait IndexedRandom: Index<usize> {
         rng: &mut R,
         amount: usize,
         weight: F,
-    ) -> Result<IndexedSamples<Self, Self::Output>, WeightError>
+    ) -> Result<IndexedSamples<'_, Self, Self::Output>, WeightError>
     where
         Self::Output: Sized,
         R: Rng + ?Sized,

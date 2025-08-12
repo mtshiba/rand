@@ -10,8 +10,8 @@ use core::time::Duration;
 use criterion::measurement::WallTime;
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkGroup, Criterion};
 use rand::prelude::*;
+use rand::rngs::OsRng;
 use rand::rngs::ReseedingRng;
-use rand::rngs::{mock::StepRng, OsRng};
 use rand_chacha::rand_core::UnwrapErr;
 use rand_chacha::{ChaCha12Rng, ChaCha20Core, ChaCha20Rng, ChaCha8Rng};
 use rand_pcg::{Pcg32, Pcg64, Pcg64Dxsm, Pcg64Mcg};
@@ -39,7 +39,6 @@ pub fn random_bytes(c: &mut Criterion) {
         });
     }
 
-    bench(&mut g, "step", StepRng::new(0, 1));
     bench(&mut g, "pcg32", Pcg32::from_rng(&mut rand::rng()));
     bench(&mut g, "pcg64", Pcg64::from_rng(&mut rand::rng()));
     bench(&mut g, "pcg64mcg", Pcg64Mcg::from_rng(&mut rand::rng()));
@@ -68,7 +67,6 @@ pub fn random_u32(c: &mut Criterion) {
         });
     }
 
-    bench(&mut g, "step", StepRng::new(0, 1));
     bench(&mut g, "pcg32", Pcg32::from_rng(&mut rand::rng()));
     bench(&mut g, "pcg64", Pcg64::from_rng(&mut rand::rng()));
     bench(&mut g, "pcg64mcg", Pcg64Mcg::from_rng(&mut rand::rng()));
@@ -97,7 +95,6 @@ pub fn random_u64(c: &mut Criterion) {
         });
     }
 
-    bench(&mut g, "step", StepRng::new(0, 1));
     bench(&mut g, "pcg32", Pcg32::from_rng(&mut rand::rng()));
     bench(&mut g, "pcg64", Pcg64::from_rng(&mut rand::rng()));
     bench(&mut g, "pcg64mcg", Pcg64Mcg::from_rng(&mut rand::rng()));
@@ -199,7 +196,7 @@ pub fn reseeding_bytes(c: &mut Criterion) {
     g.throughput(criterion::Throughput::Bytes(1024 * 1024));
 
     fn bench(g: &mut BenchmarkGroup<WallTime>, thresh: u64) {
-        let name = format!("chacha20_{}k", thresh);
+        let name = format!("chacha20_{thresh}k");
         g.bench_function(name.as_str(), |b| {
             let mut rng = ReseedingRng::<ChaCha20Core, _>::new(thresh * 1024, OsRng).unwrap();
             let mut buf = [0u8; 1024 * 1024];

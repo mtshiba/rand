@@ -248,12 +248,12 @@ impl<R: BlockRngCore + SeedableRng> SeedableRng for BlockRng<R> {
     }
 
     #[inline(always)]
-    fn from_rng(rng: &mut impl RngCore) -> Self {
+    fn from_rng<S: RngCore + ?Sized>(rng: &mut S) -> Self {
         Self::new(R::from_rng(rng))
     }
 
     #[inline(always)]
-    fn try_from_rng<S: TryRngCore>(rng: &mut S) -> Result<Self, S::Error> {
+    fn try_from_rng<S: TryRngCore + ?Sized>(rng: &mut S) -> Result<Self, S::Error> {
         R::try_from_rng(rng).map(Self::new)
     }
 }
@@ -411,12 +411,12 @@ impl<R: BlockRngCore + SeedableRng> SeedableRng for BlockRng64<R> {
     }
 
     #[inline(always)]
-    fn from_rng(rng: &mut impl RngCore) -> Self {
+    fn from_rng<S: RngCore + ?Sized>(rng: &mut S) -> Self {
         Self::new(R::from_rng(rng))
     }
 
     #[inline(always)]
-    fn try_from_rng<S: TryRngCore>(rng: &mut S) -> Result<Self, S::Error> {
+    fn try_from_rng<S: TryRngCore + ?Sized>(rng: &mut S) -> Result<Self, S::Error> {
         R::try_from_rng(rng).map(Self::new)
     }
 }
@@ -530,5 +530,34 @@ mod test {
         c[8..12].copy_from_slice(&rng3.next_u32().to_le_bytes());
         c[12..].copy_from_slice(&rng3.next_u32().to_le_bytes());
         assert_eq!(b, c);
+    }
+
+    #[test]
+    fn blockrng64_generate_and_set() {
+        let mut rng = BlockRng64::<DummyRng64>::from_seed([1, 2, 3, 4, 5, 6, 7, 8]);
+        assert_eq!(rng.index(), rng.results.as_ref().len());
+
+        rng.generate_and_set(5);
+        assert_eq!(rng.index(), 5);
+    }
+
+    #[test]
+    #[should_panic(expected = "index < self.results.as_ref().len()")]
+    fn blockrng64_generate_and_set_panic() {
+        let mut rng = BlockRng64::<DummyRng64>::from_seed([1, 2, 3, 4, 5, 6, 7, 8]);
+        rng.generate_and_set(rng.results.as_ref().len());
+    }
+
+    #[test]
+    fn blockrng_next_u64() {
+        let mut rng = BlockRng::<DummyRng>::from_seed([1, 2, 3, 4]);
+        let result_size = rng.results.as_ref().len();
+        for _i in 0..result_size / 2 - 1 {
+            rng.next_u64();
+        }
+        rng.next_u32();
+
+        let _ = rng.next_u64();
+        assert_eq!(rng.index(), 1);
     }
 }
